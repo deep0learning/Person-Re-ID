@@ -13,6 +13,20 @@ model_urls = {
 }
 
 
+def inception_v3(pretrained=False, **kwargs):
+    r"""Inception v3 model architecture from
+    `"Rethinking the Inception Architecture for Computer Vision" <http://arxiv.org/abs/1512.00567>`_.
+    Args:
+        pretrained (bool): If True, returns a model pre-trained on ImageNet
+    """
+    if pretrained:
+        if 'transform_input' not in kwargs:
+            kwargs['transform_input'] = True
+        model = Inception3(**kwargs)
+        utils.load_state_dict(model, model_zoo.load_url(model_urls['inception_v3_google']))
+        return model
+
+    return Inception3(**kwargs)
 
 
 
@@ -315,43 +329,10 @@ class BasicConv2d(nn.Module):
         return F.relu(x, inplace=True)
 
 
-def get_fs_ft_params(googlenet_model):
-  """Return the 'ft' and 'fs' parameters of a resnet model. Both of them are
-  sorted by names.
-  Notations:
-    'fs': Parameters trained from scratch, that's fc layer here
-    'ft': Fine-tuned parameters.
-  Why this function:
-    The saving and loading mechanism of torch.optim.Optimizer requires that
-    the parameters in the ckpt and in the current model should have same order!
-  """
-  named_param_fs = list(googlenet_model.fc.named_parameters(prefix='fc'))
-  named_param_ft = list(
-    set(googlenet_model.named_parameters()) - set(named_param_fs))
-  named_param_fs.sort(key=(lambda tup: tup[0]))
-  named_param_ft.sort(key=(lambda tup: tup[0]))
-  param_fs = [param for name, param in named_param_fs]
-  param_ft = [param for name, param in named_param_ft]
-
-  return param_ft, param_fs
 
 
 
 
-def inception_v3(pretrained=False, **kwargs):
-    r"""Inception v3 model architecture from
-    `"Rethinking the Inception Architecture for Computer Vision" <http://arxiv.org/abs/1512.00567>`_.
-    Args:
-        pretrained (bool): If True, returns a model pre-trained on ImageNet
-    """
-    if pretrained:
-        if 'transform_input' not in kwargs:
-            kwargs['transform_input'] = True
-        model = Inception3(**kwargs)
-        utils.load_state_dict(model, model_zoo.load_url(model_urls['inception_v3_google']))
-        return model
-
-    return Inception3(**kwargs)
 
 
 
