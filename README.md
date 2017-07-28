@@ -1,4 +1,4 @@
-# Practising and testing
+# Person-Re-ID
 
 Implemented the ResNet50 and GoogleNet(Inception_v3) with Pytorch  for person re-identification on Market 1501 dataset
 
